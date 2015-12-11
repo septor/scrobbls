@@ -1,5 +1,11 @@
 <?php
-
+/*
+ * Scrobbls - A Last.fm Display plugin for e107
+ *
+ * Copyright (C) 2015 Patrick Weaver (http://trickmod.com/)
+ * For additional information refer to the README.md file.
+ *
+ */
 class Scrobbls
 {
 	public $key;
@@ -60,19 +66,69 @@ class scrobblUser extends Scrobbls
 
 		return $output;
 	}
-	
+
 	// $options can be any optional params located here: http://www.last.fm/api/show/user.getRecentTracks
 	function getRecentTracks($options='')
 	{
 		$options = (empty($options) ? '' : '&'.$options);
 		$data = parent::retrieve('user.getRecentTracks&user='.$this->user.$options);
-		$tracks = $data->recenttracks;
-
-		//TODO: Parse the tracks, and their info, into an array.
+		$tracks = $data->recenttracks->track;
+		
+		$i = 1;
 		foreach($tracks as $track)
 		{
-			//
+			$output[$i] = array(
+				'artist' => $track->artist,
+				'name' => $track->name,
+				'album' => $track->album,
+				'url' => $track->url,
+				'date' => $track->date['uts'],
+				'streamable' => $track->streamable,
+			);
+			$i++;
 		}
+
+		return $output;
+	}
+
+	function getLovedTracks($options='')
+	{
+		$options = (empty($options_) ? '' : '&'.$options);
+		$data = parent::retrieve('user.getLovedTracks&user='.$this->user.$options);
+		$tracks = $data->lovedtracks->track;
+		
+		$i = 1;
+		foreach($tracks as $track)
+		{
+			$output[$i] = array(
+				'artist' => $track->artist['name'],
+				'artistUrl' => $track->artist['url'],
+				'name' => $track->name,
+				'url' => $track->url,
+				'date' => $track->date['uts'],
+			);
+			$i++;
+		}
+
+		return $output;
+	}
+
+	function getTopArtists($options='')
+	{
+		$options = (empty($options_) ? '' : '&'.$options);
+		//
+	}
+
+	function getTopTracks($options='')
+	{
+		$options = (empty($options_) ? '' : '&'.$options);
+		//
+	}
+
+	function getTopAlbums($options='')
+	{
+		$options = (empty($options_) ? '' : '&'.$options);
+		//
 	}
 }
 
@@ -83,7 +139,7 @@ class scrobblArtist extends Scrobbls
 	function __construct($artist, $apiKey)
 	{
 		$this->artist = $artist;
-		parent::setKey() = $apiKey;
+		parent::setKey($apiKey);
 	}
 
 	function getInfo($options='')
