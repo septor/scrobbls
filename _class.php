@@ -2,36 +2,50 @@
 
 class Scrobbls
 {
-	private $key;
-	private $secret;
-	var $user;
+	public $key;
 
-	function __construct($username, $apiKey, $secret)
+	function __construct()
 	{
-		$this->key = $apiKey;
-		$this->secret = $secret;
-		$this->user = $username;
+	}
+
+	function setKey($key)
+	{
+		$this->key = $key;
+	}
+
+	function getKey()
+	{
+		return $this->key;
 	}
 
 	function retrieve($data)
 	{
-		//
+		$url = 'http://ws.audioscrobbler.com/2.0/?method='.$data.'&api_key='.$this->key;
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+		$result = curl_exec($ch);
+
+		return simplexml_load_string($result);
 	}
 }
 
 class scrobblUser extends Scrobbls
 {
-	function __construct()
+	public $user;
+	function __construct($user, $apiKey)
 	{
-		//
+		$this->user = $user;
+		parent::setKey($apiKey);
 	}
 
 	function getInfo()
 	{
-		$user = parent::retrieve('user.getInfo');
+		$data = parent::retrieve('user.getInfo&user='.$this->user);
+		$user = $data->user;
 
 		$output = array(
-			'id' => $user->id,
 			'name' => $user->name,
 			'url' => $user->url,
 			'image' => $user->image,
@@ -46,40 +60,33 @@ class scrobblUser extends Scrobbls
 
 		return $output;
 	}
+	
+	// $options can be any optional params located here: http://www.last.fm/api/show/user.getRecentTracks
+	function getRecentTracks($options='')
+	{
+		$options = (empty($options) ? '' : '&'.$options);
+		$data = parent::retrieve('user.getRecentTracks&user='.$this->user.$options);
+		$tracks = $data->recenttracks;
+
+		//TODO: Parse the tracks, and their info, into an array.
+		foreach($tracks as $track)
+		{
+			//
+		}
+	}
 }
 
 class scrobblArtist extends Scrobbls
 {
-	function __construct()
-	{
-		//
-	}
-}
+	public $artist;
 
-class scrobblAlbum extends Scrobbls
-{
-	function __construct()
+	function __construct($artist, $apiKey)
 	{
-		//
-	}
-}
-
-class scrobblTrack extends Scrobbls
-{
-	function __construct()
-	{
-		//
+		$this->artist = $artist;
+		parent::setKey() = $apiKey;
 	}
 
-	function getInfo()
-	{
-		//
-	}
-}
-
-class scrobblChart extends Scrobbls
-{
-	function __construct()
+	function getInfo($options='')
 	{
 		//
 	}
