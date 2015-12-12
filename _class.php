@@ -74,7 +74,7 @@ class scrobblUser extends Scrobbls
 		$data = parent::retrieve('user.getRecentTracks&user='.$this->user.$options);
 		$tracks = $data->recenttracks->track;
 		
-		$i = 1;
+		$i = 0;
 		foreach($tracks as $track)
 		{
 			$output[$i] = array(
@@ -97,15 +97,24 @@ class scrobblUser extends Scrobbls
 		$data = parent::retrieve('user.getLovedTracks&user='.$this->user.$options);
 		$tracks = $data->lovedtracks->track;
 		
-		$i = 1;
+		$i = 0;
 		foreach($tracks as $track)
 		{
 			$output[$i] = array(
-				'artist' => $track->artist['name'],
-				'artistUrl' => $track->artist['url'],
+				'mbid' => $track->mbid,
+				'artist' => array(
+					'name' => $track->artist['name'],
+					'mbid' => $track->artist['mbid'],
+					'url' => $track->artist['url'],
+				),
 				'name' => $track->name,
 				'url' => $track->url,
 				'date' => $track->date['uts'],
+				'image' => array(
+					'small' => $artist->image['small'],
+					'medium' => $artist->image['medium'],
+					'large' => $artist->image['large'],
+				),
 			);
 			$i++;
 		}
@@ -116,19 +125,104 @@ class scrobblUser extends Scrobbls
 	function getTopArtists($options='')
 	{
 		$options = (empty($options_) ? '' : '&'.$options);
-		//
+		$data = parent::retrieve('user.getTopArtists&user='.$this->user);
+		$topArtists = $data->topartists->artist;
+
+		foreach($topArtists as $artist)
+		{
+			$output[$artist['rank']] = array(
+				'name' => $artist->name,
+				'playcount' => $artist->playcount,
+				'mbid' => $artist->mbid,
+				'url' => $artist->url,
+				'streamable' => $artist->streamable,
+				'image' => array(
+					'small' => $artist->image['small'],
+					'medium' => $artist->image['medium'],
+					'large' => $artist->image['large'],
+				),
+			);
+		}
+
+		return $output;
 	}
 
 	function getTopTracks($options='')
 	{
 		$options = (empty($options_) ? '' : '&'.$options);
-		//
+		$data = parent::retrieve('user.getTopTracks&user='.$this->user);
+		$topTracks = $data->toptracks->track;
+
+		foreach($topTracks as $track)
+		{
+			$output[$track['rank']] = array(
+				'name' => $track->name,
+				'playcount' => $track->playcount,
+				'mbid' => $track->mbid,
+				'url' => $track->url,
+				'artist' => array(
+					'name' => $track->artist['name'],
+					'mbid' => $track->artist['mbid'],
+					'url' => $track->artist['url'],
+				),
+				'image' => array(
+					'small' => $track->image['small'],
+					'medium' => $track->image['medium'],
+					'large' => $track->image['large'],
+				),
+			);
+		}
+
+		return $output;
 	}
 
 	function getTopAlbums($options='')
 	{
 		$options = (empty($options_) ? '' : '&'.$options);
-		//
+		$data = parent::retrieve('user.getTopAlbums&user='.$this->user);
+		$topAlbums = $data->topalbums->album;
+
+		foreach($topAlbums as $album)
+		{
+			$output[$album['rank']] = array(
+				'name' => $album->name,
+				'playcount' => $album->playcount,
+				'mbid' => $album->mbid,
+				'url' => $album->url,
+				'artist' => array(
+					'name' => $album->artist['name'],
+					'mbid' => $album->artist['mbid'],
+					'url' => $album->artist['url'],
+				),
+				'image' => array(
+					'small' => $album->image['small'],
+					'medium' => $album->image['medium'],
+					'large' => $album->image['large'],
+				),
+			);
+		}
+
+		return $output;
+	}
+
+	function getTopTags($options='')
+	{
+		$options = (empty($options_) ? '' : '&'.$options);
+		$data = parent::retrieve('user.getTopTags&user='.$this->user);
+		$topTags = $data->toptags->tag;
+
+		$i = 0;
+		foreach($topTags as $tag)
+		{
+			$output[$i] = array(
+				'name' => $tag->name,
+				'count' => $tag->count,
+				'url' => $tag->url,
+			);
+			$i++;
+		}
+
+		return $outputl
 	}
 }
 
