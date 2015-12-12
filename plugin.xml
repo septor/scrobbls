@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Plugin name="Scrobbls" lan="" version="1.0" date="2015-12-11" compatibility="2.0" installRequired="true" >
+	<author name="Patrick Weaver" url="http://trickmod.com" />
+	<summary lan="">An extensive Last.fm data displaying plugin.</summary>
+	<description lan="">An extensive Last.fm data displaying plugin.</description>
+	<keywords>
+		<word>lastfm</word>
+		<word>music</word>
+		<word>scrobble</word>
+	</keywords>
+	<category>content</category>
+	<copyright>2015</copyright>
+	<adminLinks>
+		<link url="admin_config.php" description="" icon="" iconSmall="" primary="true" >LAN_CONFIGURE</link>
+	</adminLinks>
+	<pluginPrefs>
+		<pref name='apiKey'></pref>
+		<pref name='displayLimit'>10</pref>
+	</pluginPrefs>
+</e107Plugin>
