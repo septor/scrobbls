@@ -222,7 +222,7 @@ class scrobblUser extends Scrobbls
 			$i++;
 		}
 
-		return $outputl
+		return $output;
 	}
 }
 
