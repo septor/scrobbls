@@ -36,17 +36,42 @@ class scrobblUser extends Scrobbls
 		return $output;
 	}
 
-	// $options can be any optional params located here: http://www.last.fm/api/show/user.getRecentTracks
+	function getShouts($type='shouts', $options='')
+	{
+		$options = (empty($options) ? '' : '&'.$options);
+		$data = parent::retrieve('user.getShouts&user='.$this->user.$options);
+
+		if($type == 'shouts')
+		{
+			$shouts = $data->shouts->shout;
+
+			foreach($shouts as $shout)
+			{
+				$output[] = array(
+					'author' => $shout->author,
+					'body' => $shout->body,
+					'date' => strtotime($shout->date),
+				);
+			}
+		}
+		elseif($type == 'count')
+		{
+			$output = $data->shouts['count'];
+		}
+
+		return $output;
+	}
+
+
 	function getRecentTracks($options='')
 	{
 		$options = (empty($options) ? '' : '&'.$options);
 		$data = parent::retrieve('user.getRecentTracks&user='.$this->user.$options);
 		$tracks = $data->recenttracks->track;
 		
-		$i = 0;
 		foreach($tracks as $track)
 		{
-			$output[$i] = array(
+			$output[] = array(
 				'artist' => $track->artist,
 				'name' => $track->name,
 				'album' => $track->album,
@@ -54,7 +79,6 @@ class scrobblUser extends Scrobbls
 				'date' => $track->date['uts'],
 				'streamable' => $track->streamable,
 			);
-			$i++;
 		}
 
 		return $output;
@@ -62,14 +86,13 @@ class scrobblUser extends Scrobbls
 
 	function getLovedTracks($options='')
 	{
-		$options = (empty($options_) ? '' : '&'.$options);
+		$options = (empty($options) ? '' : '&'.$options);
 		$data = parent::retrieve('user.getLovedTracks&user='.$this->user.$options);
 		$tracks = $data->lovedtracks->track;
 		
-		$i = 0;
 		foreach($tracks as $track)
 		{
-			$output[$i] = array(
+			$output[] = array(
 				'mbid' => $track->mbid,
 				'artist' => array(
 					'name' => $track->artist['name'],
@@ -85,7 +108,79 @@ class scrobblUser extends Scrobbls
 					'large' => $artist->image['large'],
 				),
 			);
-			$i++;
+		}
+
+		return $output;
+	}
+
+	function getArtistTracks($artist, $options='')
+	{
+		$options = (empty($options) ? '' : '&'.$options);
+		if(!empty($artist))
+		{
+			$data = parent::retrieve('user.getArtistTracks&user='.$this->user.'&artist='.$artist);
+			$artistTracks = $data->artisttracks->track;
+
+			foreach($artistTracks as $track)
+			{
+				$output[] = array(
+					'artist' => array(
+						'mbid' => $track->artist['mbid'],
+						'name' => $track->artist,
+						'url' => 'http://www.last.fm/music/'.urlencode($track->artist),
+					),
+					'name' => $track->name,
+					'streamable' => $track->streamable,
+					'mbid' => $track->mbid,
+					'album' => array(
+						'mbid' => $track->album['mbid'],
+						'name' => $track->album,
+					),
+					'url' => $track->url,
+					'image' => array(
+						'small' => $track->image['small'],
+						'medium' => $track->image['medium'],
+						'large' => $track->image['large'],
+						'extralarge' => $track->image['extralarge'],
+					),
+					'date' => $track->date['uts'],
+				);
+			}
+		}
+		else
+		{
+			$output = null;
+		}
+
+		return $output;
+	}
+
+	function getBannedTracks($options='')
+	{
+		$options = (empty($options) ? '' : '&'.$options);
+		$data = parent::retrieve('user.getBannedTracks&user='.$this->user);
+		$bannedTracks = $data->bannedtracks->track;
+
+		foreach($bannedTracks as $track)
+		{
+			$output[] = array(
+				'name' => $track->name,
+				'mbid' => $track->mbid,
+				'url' => $track->url,
+				'date' => $track->date['uts'],
+				'artist' => array(
+					'name' => $track->artist['name'],
+					'mbid' => $track->artist['mbid'],
+					'url' => $track->artist['url'],
+				),
+				'image' => array(
+					'small' => $track->image['small'],
+					'medium' => $track->image['medium'],
+					'large' => $track->image['large'],
+					'extralarge' => $track->image['extralarge'],
+				),
+				'streamable' => $track->streamable['fulltrack'],
+			);
 		}
 
 		return $output;
@@ -93,7 +188,7 @@ class scrobblUser extends Scrobbls
 
 	function getTopArtists($options='')
 	{
-		$options = (empty($options_) ? '' : '&'.$options);
+		$options = (empty($options) ? '' : '&'.$options);
 		$data = parent::retrieve('user.getTopArtists&user='.$this->user);
 		$topArtists = $data->topartists->artist;
 
@@ -180,15 +275,13 @@ class scrobblUser extends Scrobbls
 		$data = parent::retrieve('user.getTopTags&user='.$this->user);
 		$topTags = $data->toptags->tag;
 
-		$i = 0;
 		foreach($topTags as $tag)
 		{
-			$output[$i] = array(
+			$output[] = array(
 				'name' => $tag->name,
 				'count' => $tag->count,
 				'url' => $tag->url,
 			);
-			$i++;
 		}
 
 		return $output;
