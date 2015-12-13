@@ -14,6 +14,7 @@
 		<link url="admin_config.php" description="" icon="" iconSmall="" primary="true" >LAN_CONFIGURE</link>
 	</adminLinks>
 	<pluginPrefs>
+		<pref name='username'></pref>
 		<pref name='apiKey'></pref>
 		<pref name='displayLimit'>10</pref>
 	</pluginPrefs>

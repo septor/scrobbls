@@ -49,6 +49,12 @@ class scrobbls_ui extends e_admin_ui
 	protected $fieldpref = array();
 
 	protected $prefs = array(
+		'username' => array(
+			'title' => 'Last.fm Username',
+			'type' => 'text',
+			'data' => 'str',
+			'help' => '',
+		),
 		'apiKey' => array(
 			'title' => 'API Key',
 			'type' => 'text',
