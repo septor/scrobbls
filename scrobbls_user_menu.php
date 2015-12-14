@@ -6,7 +6,7 @@
  * For additional information refer to the README.md file.
  *
  */
-if(!defined{('e107_INIT')){ exit; }
+if(!defined('e107_INIT')){ exit; }
 require_once(e_PLUGIN.'scrobbls/_class.php');
 $pref = e107::pref('scrobbls');
 $tp = e107::getParser();
