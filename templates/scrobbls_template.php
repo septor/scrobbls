@@ -6,4 +6,6 @@
  * For additional information refer to the README.md file.
  *
  */
-$SCROBBLS_TEMPLATE['user_menu'] = '{SCROBBLS_USERNAME} has {SCROBBLS_PLAYCOUNT} total plays!';
+$SCROBBLS_TEMPLATE['user_menu'] = '
+<a href="{SCROBBLS_USER_URL}">{SCROBBLS_USER_NAME}</a> has {SCROBBLS_USER_PLAYCOUNT} total plays!
+';

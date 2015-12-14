@@ -62,13 +62,12 @@ class scrobblUser extends Scrobbls
 		return $output;
 	}
 
-
 	function getRecentTracks($options='')
 	{
 		$options = (empty($options) ? '' : '&'.$options);
 		$data = parent::retrieve('user.getRecentTracks&user='.$this->user.$options);
 		$tracks = $data->recenttracks->track;
-		
+
 		foreach($tracks as $track)
 		{
 			$output[] = array(
@@ -89,7 +88,7 @@ class scrobblUser extends Scrobbls
 		$options = (empty($options) ? '' : '&'.$options);
 		$data = parent::retrieve('user.getLovedTracks&user='.$this->user.$options);
 		$tracks = $data->lovedtracks->track;
-		
+
 		foreach($tracks as $track)
 		{
 			$output[] = array(
