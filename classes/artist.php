@@ -43,4 +43,93 @@ class scrobblArtist extends Scrobbls
 
 		return $output;
 	}
+
+	function getTopAlbums($options='')
+	{
+		$options = (empty($options) ? '' : '&'.$options);
+		$data = parent::retrieve('artist.getTopAlbums&artist='.$this->artist);
+		$topAlbums = $data->topalbums->album;
+
+		foreach($topAlbums as $album)
+		{
+			$output[$album['rank']] = array(
+				'name' => $album->name,
+				'mbid' => $album->mbid,
+				'listeners' => $album->listners,
+				'url' => $album->url,
+				'image' => array(
+					'small' => $album->image['small'],
+					'medium' => $album->image['medium'],
+					'large' => $album->image['large'],
+				),
+			);
+		}
+
+		return $output;
+	}
+
+	function getTopFans($options='')
+	{
+		$options = (empty($options) ? '' : '&'.$options);
+		$data = parent::retrieve('artist.getTopFans&artist='.$this->artist);
+		$topFans = $data->topfans->user;
+
+		foreach($topFans as $fan)
+		{
+			$output[] = array(
+				'name' => $fan->name,
+				'weight' => $fan->weight,
+				'url' => $fan->url,
+				'image' => array(
+					'small' => $fan->image['small'],
+					'medium' => $fan->image['medium'],
+					'large' => $fan->image['large'],
+				),
+			);
+		}
+
+		return $output;
+	}
+
+	function getTopTags($options='')
+	{
+		$options = (empty($options) ? '' : '&'.$options);
+		$data = parent::retrieve('artist.getTopTags&artist='.$this->artist);
+		$topTags = $data->toptags->tag;
+
+		foreach($topTags as $tag)
+		{
+			$output[] = array(
+				'name' => $tag->name,
+				'url' => $tag->url,
+			);
+		}
+
+		return $output;
+	}
+
+	function getTopTracks($options='')
+	{
+		$options = (empty($options) ? '' : '&'.$options);
+		$data = parent::retrieve('artist.getTopTracks&artist='.$this->artist);
+		$topTracks = $data->toptracks->track;
+
+		foreach($topTracks as $track)
+		{
+			$output[$track['rank']] = array(
+				'name' => $track->name,
+				'mbid' => $track->mbid,
+				'playcount' => $track->playcount,
+				'listeners' => $track->listners,
+				'url' => $track->url,
+				'image' => array(
+					'small' => $track->image['small'],
+					'medium' => $track->image['medium'],
+					'large' => $track->image['large'],
+				),
+			);
+		}
+
+		return $output;
+	}
 }
